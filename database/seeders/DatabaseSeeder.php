@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,12 +12,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Puedes crear varios usuarios de prueba, incluyendo los campos adicionales
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'adibidea@tinderkete.com',
-            'password' => '1234',
+            'izena' => 'Test',              // Nombre
+            'abizenak' => 'User',           // Apellidos
+            'email' => 'adibidea@tinderkete.com', // Correo electrónico
+            'pasahitza' => bcrypt('1234'),  // Contraseña, la debes cifrar
+            'jaiotzeData' => '2000-01-01',  // Fecha de nacimiento (asegúrate de que sea mayor de 18 años)
         ]);
     }
 }
