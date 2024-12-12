@@ -14,11 +14,11 @@ class DatabaseSeeder extends Seeder
     {
         // Puedes crear varios usuarios de prueba, incluyendo los campos adicionales
         User::factory()->create([
-            'izena' => 'Test',              // Nombre
-            'abizenak' => 'User',           // Apellidos
+            'name' => 'Test',              // Nombre
+            'surname' => 'User',           // Apellidos
             'email' => 'adibidea@tinderkete.com', // Correo electrónico
-            'pasahitza' => bcrypt('1234'),  // Contraseña, la debes cifrar
-            'jaiotzeData' => '2000-01-01',  // Fecha de nacimiento (asegúrate de que sea mayor de 18 años)
+            'password' => bcrypt('1234'),  // Contraseña, la debes cifrar
+            'birth_date' => '2000-01-01',  // Fecha de nacimiento (asegúrate de que sea mayor de 18 años)
         ]);
     }
 }

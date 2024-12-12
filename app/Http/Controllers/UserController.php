@@ -8,18 +8,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-class CreateUserController extends Controller
+class UserController extends Controller
 {
     
     public function register(Request $request)
     {
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
-            'izena' => 'required|string|max:255',
-            'abizenak' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'pasahitza' => 'required|string|min:8|confirmed',
-            'jaiotzeData' => 'required|date|before:-18 years', // Asegura que el usuario tenga más de 18 años
+            'password' => 'required|string|min:8|confirmed',
+            'birth_date' => 'required|date|before:-18 years', // Asegura que el usuario tenga más de 18 años
+            'admin' => 'required|boolean',
         ]);
 
         // Si la validación falla, devolver errores
@@ -31,11 +32,12 @@ class CreateUserController extends Controller
 
         // Crear un nuevo usuario
         $user = User::create([
-            'izena' => $request->izena,
-            'abizenak' => $request->abizenak,
+            'name' => $request->name,
+            'surname' => $request->surname,
             'email' => $request->email,
-            'pasahitza' => Hash::make($request->pasahitza),
-            'jaiotzeData' => Carbon::parse($request->jaiotzeData), // Guardamos la fecha de nacimiento
+            'password' => Hash::make($request->password),
+            'birth_date' => Carbon::parse($request->birth_date), // Guardamos la fecha de nacimiento
+            'admin' => $request->admin,
         ]);
 
         // Devolver la respuesta con el nuevo usuario creado
