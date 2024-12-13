@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // "php artisan db:seed"  seederrak pasatzeko
         DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // Desactiva las claves foráneas
         DB::table('users')->truncate();            // Trunca la tabla
         DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // Reactiva las claves foráneas
@@ -54,11 +55,6 @@ class DatabaseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-
-            $this->command->info('Seeded tournament_user with user_id=' . $userId . ' and tournament_id=' . $tournamentId);
-        } else {
-            $this->command->warn('No se encontraron usuarios o torneos existentes para poblar tournament_user.');
-        }
-
+        } 
     }
 }
