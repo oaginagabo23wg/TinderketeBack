@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tournament extends Model
 {
+    use HasFactory;
+
     // Aldatu daitezkeen 
     protected $fillable = [
         'sport',

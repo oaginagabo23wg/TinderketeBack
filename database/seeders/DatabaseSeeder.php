@@ -3,7 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Location;
+use App\Models\Tournament;
+use App\Models\TournamentUser;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,13 +16,49 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Puedes crear varios usuarios de prueba, incluyendo los campos adicionales
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;'); // Desactiva las claves foráneas
+        DB::table('users')->truncate();            // Trunca la tabla
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;'); // Reactiva las claves foráneas
+                // Puedes crear varios usuarios de prueba, incluyendo los campos adicionales
         User::factory()->create([
             'name' => 'Test',              // Nombre
             'surname' => 'User',           // Apellidos
             'email' => 'adibidea@tinderkete.com', // Correo electrónico
             'password' => bcrypt('1234'),  // Contraseña, la debes cifrar
             'birth_date' => '2000-01-01',  // Fecha de nacimiento (asegúrate de que sea mayor de 18 años)
+            'admin' => 1
         ]);
+
+        Location::factory()->create([
+            'name' => 'antiguo',
+            'coordinates' => 'hurruti',
+            'img' => 'antigo.jpg'
+        ]);
+
+        Tournament::factory()->create([
+            'sport' => 'trinkete',
+            'description' => 'asdasd',
+            'date' => '2024-12-13 12:00:30',
+            'price' => 40,
+            'max_participants' => 12,
+            'location_id' => 1
+        ]);
+
+        $userId = DB::table('users')->value('id'); // Primer ID de la tabla `users`
+        $tournamentId = DB::table('tournaments')->value('id'); // Primer ID de la tabla `tournaments`
+        if ($userId && $tournamentId) {
+            // Insertar la relación en tournament_user
+            DB::table('tournament_users')->insert([
+                'user_id' => $userId,
+                'tournament_id' => $tournamentId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $this->command->info('Seeded tournament_user with user_id=' . $userId . ' and tournament_id=' . $tournamentId);
+        } else {
+            $this->command->warn('No se encontraron usuarios o torneos existentes para poblar tournament_user.');
+        }
+
     }
 }
