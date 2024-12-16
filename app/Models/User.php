@@ -31,7 +31,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'pasahitza',   // Asegúrate de ocultar 'pasahitza', no 'password'
+        'password',   // Asegúrate de ocultar 'pasahitza', no 'password'
         'remember_token',
     ];
 
@@ -44,7 +44,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'pasahitza' => 'hashed',  // Asegúrate de que la contraseña se guarde correctamente como hash
+            'password' => 'hashed',  // Asegúrate de que la contraseña se guarde correctamente como hash
             'birth_date' => 'date', // Aseguramos que la fecha de nacimiento se maneje como una fecha
         ];
     }
