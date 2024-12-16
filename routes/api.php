@@ -12,3 +12,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class); // Usamos apiResource para gestionar las rutas de usuarios
 });
 
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
