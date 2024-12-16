@@ -5,11 +5,13 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;  // Agregar este trait
+
 use Carbon\Carbon;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +25,8 @@ class User extends Authenticatable
         'password',   // Contraseña (cambiado de 'password' a 'pasahitza')
         'birth_date', // Fecha de nacimiento
         'admin',
+        'jaioterria',
+        'telefonoa'
     ];
 
     /**
@@ -31,7 +35,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'pasahitza',   // Asegúrate de ocultar 'pasahitza', no 'password'
+        'password',   // Asegúrate de ocultar 'pasahitza', no 'password'
         'remember_token',
     ];
 
@@ -43,8 +47,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'pasahitza' => 'hashed',  // Asegúrate de que la contraseña se guarde correctamente como hash
+            //'email_verified_at' => 'datetime',
+            'password' => 'hashed',  // Asegúrate de que la contraseña se guarde correctamente como hash
             'birth_date' => 'date', // Aseguramos que la fecha de nacimiento se maneje como una fecha
         ];
     }
