@@ -27,5 +27,11 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             //  'throttle:60,1',
         ],
+
+        'sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        // app/Http/Kernel.php
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+
+
     ];
 }

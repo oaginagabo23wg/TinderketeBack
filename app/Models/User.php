@@ -25,8 +25,9 @@ class User extends Authenticatable
         'password',   // Contraseña (cambiado de 'password' a 'pasahitza')
         'birth_date', // Fecha de nacimiento
         'admin',
-        'jaioterria',
-        'telefonoa'
+        'hometown',
+        'telephone',
+	'remember_token'
     ];
 
     /**
@@ -36,7 +37,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',   // Asegúrate de ocultar 'pasahitza', no 'password'
-        'remember_token',
     ];
 
     /**

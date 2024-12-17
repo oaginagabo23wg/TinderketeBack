@@ -10,11 +10,12 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    // Middleware para proteger estas rutas con Sanctum
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum');
-    }
+    // // Middleware para proteger estas rutas con Sanctum
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:sanctum');
+    //     //console.log('kaixo');
+    // }
 
     public function register(Request $request)
     {
@@ -25,7 +26,6 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'birth_date' => 'required|date|before:-18 years',
-            'admin' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -40,9 +40,9 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'birth_date' => Carbon::parse($request->birth_date),
-            'admin' => $request->admin,
-            'jaioterria' => $request->jaioterria ?? null,
-            'telefonoa' => $request->telefonoa ?? null,
+            'admin' => '0',
+            'hometown' => $request->hometown ?? null,
+            'telephone' => $request->telephone ?? null,
         ]);
 
         return response()->json([
@@ -83,8 +83,8 @@ class UserController extends Controller
             'password' => 'sometimes|string|min:8|confirmed',
             'birth_date' => 'sometimes|date|before:-18 years',
             'admin' => 'sometimes|boolean',
-            'jaioterria' => 'sometimes|string',
-            'telefonoa' => 'sometimes|string',
+            'hometown' => 'sometimes|string',
+            'telephone' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -100,8 +100,8 @@ class UserController extends Controller
             'password' => $request->password ? Hash::make($request->password) : $user->password,
             'birth_date' => $request->birth_date ? Carbon::parse($request->birth_date) : $user->birth_date,
             'admin' => $request->admin ?? $user->admin,
-            'jaioterria' => $request->jaioterria ?? $user->jaioterria,
-            'telefonoa' => $request->telefonoa ?? $user->telefonoa,
+            'hometown' => $request->hometown ?? $user->hometown,
+            'telephone' => $request->telephone ?? $user->telephone,
         ]);
 
         return response()->json([
