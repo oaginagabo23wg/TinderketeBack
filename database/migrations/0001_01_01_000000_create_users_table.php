@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('surname');
             $table->string('email')->unique();
             //$table->timestamp('email_verified_at')->nullable();
-            //kaixo
             $table->string('password');
             $table->string('hometown')->nullable();
             $table->string('telephone')->nullable();
