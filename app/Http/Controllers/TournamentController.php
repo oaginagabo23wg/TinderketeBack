@@ -34,7 +34,7 @@ class TournamentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'sport' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'date' => 'required|date',
             'price' => 'required|integer|min:0',
@@ -81,7 +81,7 @@ class TournamentController extends Controller
         }
 
         $validated = $request->validate([
-            'sport' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'date' => 'required|date',
             'price' => 'required|integer|min:0',

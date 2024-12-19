@@ -9,11 +9,12 @@ class Tournament extends Model
 {
     use HasFactory;
 
-    // Aldatu daitezkeen 
+    // Aldatu daitezkeen
     protected $fillable = [
-        'sport',
+        'title',
         'description',
         'date',
+        'time',
         'price',
         'max_participants',
         'location_id',

@@ -33,13 +33,14 @@ class DatabaseSeeder extends Seeder
         Location::factory()->create([
             'name' => 'antiguo',
             'coordinates' => 'hurruti',
-            'img' => 'antigo.jpg'
+            'img' => 'LezoFrontoia.jpg'
         ]);
 
         Tournament::factory()->create([
-            'sport' => 'trinkete',
+            'title' => 'Trinkete txapelketa!',
             'description' => 'asdasd',
             'date' => '2024-12-13 12:00:30',
+            'time' => '12:00:30',
             'price' => 40,
             'max_participants' => 12,
             'location_id' => 1

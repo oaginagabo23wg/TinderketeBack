@@ -19,15 +19,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',       // Nombre
-        'surname',    // Apellidos
-        'email',       // Correo electrónico
-        'password',   // Contraseña (cambiado de 'password' a 'pasahitza')
-        'birth_date', // Fecha de nacimiento
+        'name',
+        'surname',
+        'email',
+        'password',
+        'birth_date',
         'admin',
         'hometown',
         'telephone',
-	'remember_token'
+	    'remember_token'
     ];
 
     /**
@@ -48,15 +48,14 @@ class User extends Authenticatable
     {
         return [
             //'email_verified_at' => 'datetime',
-            'password' => 'hashed',  // Asegúrate de que la contraseña se guarde correctamente como hash
-            'birth_date' => 'date', // Aseguramos que la fecha de nacimiento se maneje como una fecha
+            'password' => 'hashed',
+            'birth_date' => 'date',
         ];
     }
 
     // Relations
     public function tournament()
     {
-        //TODO: tournament_user tabla
         return $this->belongsToMany(Tournament::class, 'tournament_user');
     }
 }
