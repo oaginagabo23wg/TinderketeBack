@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('telephone')->nullable();
             $table->date('birth_date');
             $table->boolean('admin');
-            $table->rememberToken();
             $table->timestamps();
         });
 

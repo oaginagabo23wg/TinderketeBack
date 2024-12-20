@@ -6,10 +6,12 @@ use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserController;
 
-Route::post('login', [AuthController::class, 'login']);
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login']);
+Route::put('/user/{id}', [UserController::class, 'update']);
 Route::apiResource('txapelketak', TournamentController::class);
 Route::apiResource('lokalekuak', LocationController::class);
-Route::post('register', [UserController::class, 'register']);
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUser']);
 
 
 
