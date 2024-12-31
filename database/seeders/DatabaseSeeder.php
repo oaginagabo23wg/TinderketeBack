@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
         
         TournamentUser::factory()->create([
             'tournament_id' => 1,
-            'user_id' => 1
+            'user_id' => 2
         ]);
     }
 }

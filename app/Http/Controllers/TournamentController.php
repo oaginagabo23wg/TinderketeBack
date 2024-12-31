@@ -12,7 +12,7 @@ class TournamentController extends Controller
      */
     public function index()
     {
-        $tournaments = Tournament::with('location')->get();
+        $tournaments = Tournament::with('location', 'users')->get();
 
         return response()->json([
             'success' => true,

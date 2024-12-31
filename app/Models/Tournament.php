@@ -23,12 +23,12 @@ class Tournament extends Model
     // Relations
     public function location()
     {
-        return $this->hasOne(Location::class, 'id', 'location_id');
+        return $this->belongsTo(Location::class, 'id');
     }
 
     // Relación: Un torneo tiene muchos usuarios
     public function users()
     {
-        return $this->belongsToMany(User::class, 'tournament_user');
+        return $this->belongsToMany(User::class, 'tournament_users');
     }
 }

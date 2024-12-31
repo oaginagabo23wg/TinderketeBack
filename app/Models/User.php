@@ -56,6 +56,6 @@ class User extends Authenticatable
     // Relations
     public function tournament()
     {
-        return $this->belongsToMany(Tournament::class, 'tournament_user');
+        return $this->belongsToMany(Tournament::class, 'tournament_users');
     }
 }

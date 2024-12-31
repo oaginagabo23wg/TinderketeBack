@@ -17,7 +17,7 @@ class Location extends Model
     // Relations
     public function tournaments()
     {
-        return $this->belongsTo(Tournament::class, 'id', 'location_id');
+        return $this->belongsTo(Tournament::class, 'id');
     }
 
 }
