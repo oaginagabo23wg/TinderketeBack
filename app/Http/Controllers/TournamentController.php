@@ -12,13 +12,42 @@ class TournamentController extends Controller
      */
     public function index()
     {
-        $tournaments = Tournament::with('location', 'users')->get();
+        $tournaments = Tournament::all();
 
         return response()->json([
             'success' => true,
             'data' => $tournaments
         ], 200);
     }
+    public function indexWithUsers($id = null)
+{
+    // Si se pasa un ID, buscar el torneo específico
+    if ($id) {
+        $tournament = Tournament::with('location', 'users')->find($id);
+
+        // Verificar si el torneo existe
+        if (!$tournament) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tournament not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $tournament
+        ], 200);
+    }
+
+    // Si no se pasa un ID, devolver todos los torneos con sus relaciones
+    $tournaments = Tournament::with('location', 'users')->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $tournaments
+    ], 200);
+}
+
 
     /**
      * Show the form for creating a new resource.
@@ -37,9 +66,10 @@ class TournamentController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'date' => 'required|date',
+            'time' => 'required',
             'price' => 'required|integer|min:0',
             'max_participants' => 'required|integer|min:0',
-            'location_id' => 'required|exists:locations,id'
+            'location_id' => 'required|exists:locations,id',
         ]);
 
         $tournament = Tournament::create($validated);
