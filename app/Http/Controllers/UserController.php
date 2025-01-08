@@ -79,6 +79,7 @@ class UserController extends Controller
             'hometown' => $request->hometown ?? null,
             'telephone' => $request->telephone ?? null,
             'image' => $imagePath,
+            'aktibatua' => '1', 
         ]);
 
         // Crear un token para el usuario
@@ -118,6 +119,7 @@ class UserController extends Controller
             'hometown' => 'sometimes|string',
             'telephone' => 'sometimes|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
+            'aktibatua' => 'sometimes|boolean',
         ]);
 
         $erabil->update($validated);
@@ -243,5 +245,32 @@ class UserController extends Controller
         'image_url' => $imageUrl, // Incluir la URL pública de la imagen
     ]);
 }
+
+// Añadir este método a tu controlador UserController
+
+public function delete(Request $request, $id)
+{
+    // Buscar al usuario por ID
+    $user = User::find($id);
+
+    // Verificar si el usuario existe
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Usuario no encontrado',
+        ], 404);
+    }
+
+    // Actualizar el campo aktibatua a 0 para desactivar al usuario
+    $user->aktibatua = 0;
+    $user->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Usuario desactivado correctamente',
+        'user' => $user
+    ], 200);
+}
+
 
 }
