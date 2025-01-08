@@ -1,0 +1,26 @@
+services:
+  # MariaDB Service
+  mariadb:
+    container_name: db
+    image: mariadb:10.9
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydatabase
+    volumes:
+      - './mysqldata:/var/lib/mysql'
+
+  # Adminer
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    restart: always
+    ports:
+      - 7777:8080
+
+# Volumes
+volumes:
+  mysqldata:
