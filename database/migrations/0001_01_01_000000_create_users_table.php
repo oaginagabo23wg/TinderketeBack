@@ -24,6 +24,7 @@ return new class extends Migration
             $table->boolean('admin');
             $table->string('img');
             $table->rememberToken();
+            $table->boolean('aktibatua');
             $table->timestamps();
         });
 
