@@ -54,20 +54,18 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'birth_date' => 'required|date|before:-18 years',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
+            // Ya no es necesario validar la imagen si siempre será 'public/perfiltxuri.png'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
             ], 422);
         }
-
-        // Manejo de la imagen (predeterminada o cargada)
-        $imagePath = $request->hasFile('image')
-            ? $request->file('image')->store('users', 'public') // Almacenar imagen en storage/app/public/users
-            : 'public/perfiltxuri.png'; // Ruta predeterminada para la imagen (debería estar dentro de public o storage)
-
+    
+        // Asignar siempre la imagen predeterminada
+        $imagePath = 'public/perfiltxuri.png';  // Ruta predeterminada para la imagen
+    
         // Crear el usuario
         $user = User::create([
             'name' => $request->name,
@@ -78,16 +76,16 @@ class UserController extends Controller
             'admin' => '0', // Valor predeterminado de 'admin'
             'hometown' => $request->hometown ?? null,
             'telephone' => $request->telephone ?? null,
-            'image' => $imagePath,
-            'aktibatua' => '1', 
+            'img' => $imagePath, // Asignar la imagen predeterminada
+            'aktibatua' => '1',
         ]);
-
+    
         // Crear un token para el usuario
         $token = $user->createToken('auth_token')->plainTextToken;
-
+    
         // Generar la URL pública de la imagen
         $imageUrl = asset('storage/' . $imagePath); // Asegúrate de que storage:link esté creado
-
+    
         // Devolver los datos del usuario y el token
         return response()->json([
             'message' => 'Usuario creado con éxito',
@@ -96,7 +94,7 @@ class UserController extends Controller
             'image_url' => $imageUrl, // Incluir la URL pública de la imagen
         ], 201);
     }
-
+    
 
     public function update(Request $request, string $id)
     {
@@ -118,7 +116,7 @@ class UserController extends Controller
             'admin' => 'sometimes|boolean',
             'hometown' => 'sometimes|string',
             'telephone' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
+            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
             'aktibatua' => 'sometimes|boolean',
         ]);
 
@@ -238,7 +236,7 @@ class UserController extends Controller
     }
 
     // Genera la URL pública de la imagen
-    $imageUrl = asset('storage/' . $user->image); // Asegúrate de que storage:link esté creado
+    $imageUrl = asset('storage/' . $user->img); // Asegúrate de que storage:link esté creado
 
     return response()->json([
         'user' => $user,

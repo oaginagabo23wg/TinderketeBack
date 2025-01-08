@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('1234'),  // Contraseña, la debes cifrar
             'birth_date' => '2000-01-01',  // Fecha de nacimiento (asegúrate de que sea mayor de 18 años)
             'admin' => 1,
-            'img' => 'ane.jpg'
+            'img' => 'ane.jpg',
         ]);
 
         $mikel = User::factory()->create([
@@ -40,6 +40,9 @@ class DatabaseSeeder extends Seeder
             'admin' => 0,
             'img' => 'mikel.jpg'
         ]);
+
+        User::factory(15)->create();
+
 
         $antiguo = Location::factory()->create([
             'name' => 'antiguo',
