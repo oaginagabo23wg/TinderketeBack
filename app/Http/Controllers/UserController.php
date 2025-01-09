@@ -118,14 +118,22 @@ class UserController extends Controller
             'admin' => 'sometimes|boolean',
             'hometown' => 'sometimes|string',
             'telephone' => 'sometimes|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
+            //'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
             'aktibatua' => 'sometimes|boolean',
         ]);
+
+        // Solo actualizar la imagen si se proporciona una nueva
+    if ($request->hasFile('image')) {
+        // Si se sube una nueva imagen, validarla y guardarla
+        $imagePath = $request->file('image')->store('images', 'public');
+        $validated['image'] = $imagePath;  // Guardamos la ruta de la imagen
+    }
 
         $erabil->update($validated);
 
         return response()->json([
             'success' => true,
+            'message' => 'User updated successfully',
             'data' => $erabil
         ], 200);
     }
