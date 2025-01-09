@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Mail\UserCreatedMail;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -81,6 +83,9 @@ class UserController extends Controller
             'image' => $imagePath,
             'aktibatua' => '1', 
         ]);
+
+        // Enviar el correo al usuario recién creado
+        Mail::to($user->email)->send(new UserCreatedMail($user));
 
         // Crear un token para el usuario
         $token = $user->createToken('auth_token')->plainTextToken;
