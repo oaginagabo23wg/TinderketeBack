@@ -95,6 +95,27 @@ class UserController extends Controller
         ], 201);
     }
     
+    public function store(Request $request){
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
+            'email' => 'required|date',
+            'password' => 'required|string|max:255',
+            'hometown' => 'required|string|max:255',
+            'telephone' => 'required|integer|min:9|max:9',
+            'birth_date' => 'required|date',
+            'admin' => 'required|boolean',
+            'img' => 'nullable|string|max:255',
+            'aktibatua' => 'required|boolean',
+        ]);
+
+        $user = User::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ], 201);
+    }
 
     public function update(Request $request, string $id)
     {
