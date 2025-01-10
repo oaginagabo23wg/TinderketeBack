@@ -26,8 +26,10 @@ class LocationFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'coordinates' => fake()->name(),
+            'type' => fake()->name(),
             'img' => fake()->name(),
+            'iframe' => fake()->name(),
+            'url' => fake()->name(),
         ];
     }
 }

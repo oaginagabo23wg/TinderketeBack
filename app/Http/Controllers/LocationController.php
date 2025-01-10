@@ -35,11 +35,13 @@ class LocationController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'coordinates' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
             'img' => 'required|string|max:255',
+            'iframe' => 'required|string|max:1024',
+            'url' => 'required|string|max:512'
         ]);
 
-        $location = Location::create([$validated]);
+        $location = Location::create($validated);
 
         return response()->json([
             'success' => true,
@@ -77,8 +79,10 @@ class LocationController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'coordinates' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
             'img' => 'required|string|max:255',
+            'iframe' => 'required|string|max:1024',
+            'url' => 'required|string|max:512'
         ]);
 
         $location->update([$validated]);
@@ -109,4 +113,27 @@ class LocationController extends Controller
         ]);
 
     }
+//     public function delete(Request $request, $id)
+// {
+//     // Buscar al usuario por ID
+//     $location = Location::find($id);
+
+//     // Verificar si el usuario existe
+//     if (!$location) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Usuario no encontrado',
+//         ], 404);
+//     }
+
+//     // Actualizar el campo aktibatua a 0 para desactivar al usuario
+//     $location->aktibatua = 0;
+//     $location->save();
+
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Usuario desactivado correctamente',
+//         'location' => $location
+//     ], 200);
+// }
 }

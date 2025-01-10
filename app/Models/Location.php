@@ -10,8 +10,10 @@ class Location extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'coordinates',
+        'type',
         'img',
+        'iframe',
+        'url'
     ];
 
     // Relations

@@ -46,9 +46,13 @@ class DatabaseSeeder extends Seeder
 
         $antiguo = Location::factory()->create([
             'name' => 'antiguo',
-            'coordinates' => 'hurruti',
-            'img' => 'LezoFrontoia.jpg'
+            'type' => 'frontoi',
+            'img' => 'LezoFrontoia.jpg',
+            'iframe' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10345.314412364152!2d-2.006094752446477!3d43.31309128937382!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd51baa707632f93%3A0x8680d5efa9844049!2sAntiguako%20Frontoia%20-%20Front%C3%B3n%20del%20Antiguo!5e0!3m2!1ses!2ses!4v1732786583382!5m2!1ses!2ses',
+            'url' => 'https://www.google.com/maps/place//data=!4m2!3m1!1s0xd51baa707632f93:0x8680d5efa9844049?sa=X&ved=1t:8290&ictx=111'
         ]);
+
+        Location::factory(6)->create();
 
         $txapelketa = Tournament::factory()->create([
             'title' => 'Trinkete txapelketa!',
