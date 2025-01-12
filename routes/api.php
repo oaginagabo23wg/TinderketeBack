@@ -8,7 +8,7 @@ use App\Http\Controllers\UserController;
 
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
-Route::post('/user', [UserController::class, 'store']);
+Route::post('/userStore', [UserController::class, 'store']);
 Route::get('/getUser/{id?}', [UserController::class, 'index']);
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::patch('/deleteUser/{id}', [UserController::class, 'delete']); 

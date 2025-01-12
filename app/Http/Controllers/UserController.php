@@ -99,23 +99,29 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
-            'email' => 'required|date',
+            'email' => 'required|email',
             'password' => 'required|string|max:255',
-            'hometown' => 'required|string|max:255',
-            'telephone' => 'required|integer|min:9|max:9',
+            'hometown' => 'nullable|string|max:255',
+            'telephone' => 'nullable|string|max:15',
             'birth_date' => 'required|date',
             'admin' => 'required|boolean',
-            'img' => 'nullable|string|max:255',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'aktibatua' => 'required|boolean',
         ]);
-
+    
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;  
+        }
+    
         $user = User::create($validated);
-
+    
         return response()->json([
             'success' => true,
-            'data' => $user
+            'data' => $user,  
         ], 201);
     }
+    
 
     public function update(Request $request, string $id)
     {
