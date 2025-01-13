@@ -6,17 +6,17 @@ use Illuminate\Mail\Mailable;
 
 class ContactMail extends Mailable
 {
-    public $subject = 'Nuevo mensaje de contacto'; // Asunto del correo
+    public $subject = 'Mezu berria'; // Asunto del correo
     public $data; // Datos accesibles en la vista
 
     /**
      * Constructor de la clase ContactMail.
      *
-     * @param array $data Datos pasados al mailable (name, email, message, etc.)
+     * @param array $data Datos del formulario (name, email, message, etc.)
      */
     public function __construct(array $data)
     {
-        $this->data = $data; // Almacenar los datos recibidos
+        $this->data = $data;
     }
 
     /**
@@ -26,9 +26,17 @@ class ContactMail extends Mailable
      */
     public function build()
     {
-        return $this->from($this->data['email'], $this->data['name'] ?? 'Usuario') // Configurar remitente
-                    ->subject($this->subject) // Configurar el asunto
-                    ->view('emails.contact') // Usar la vista contact.blade.php
-                    ->with('data', $this->data); // Pasar los datos a la vista
+        $subject = $this->subject;
+        
+        // Si el user_id está presente, puedes incluirlo en el asunto o en el cuerpo
+        if (isset($this->data['user_id'])) {
+            $subject .= ' (Usuario ID: ' . $this->data['user_id'] . ')';
+        }
+
+        return $this->from('noreply@tinderkete.com', 'Formulario de Contacto') // Dirección genérica
+                    ->replyTo($this->data['email'], $this->data['name'] ?? 'Usuario') // Configurar el reply-to
+                    ->subject($subject) // Asunto con el user_id si está presente
+                    ->view('emails.contact')
+                    ->with('data', $this->data);
     }
 }

@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Nuevo Mensaje de Contacto</title>
+    <title>{{ $data['name'] }} -ren Mezu berria</title>
 </head>
 <body>
-    <h1>Nuevo mensaje de contacto</h1>
-    <p><strong>Nombre:</strong> {{ $data['name'] ?? 'Usuario desconocido' }}</p>
-    <p><strong>Correo electrónico:</strong> {{ $data['email'] }}</p>
-    <p><strong>Mensaje:</strong></p>
+    <h1>{{ $data['name'] }} -ren Mezu berria</h1>
+    <p><strong>Izena:</strong> {{ $data['name'] ?? 'Usuario desconocido' }}</p>
+    <p><strong>Email-a:</strong> {{ $data['email'] }}</p>
+    <p><strong>Mezua:</strong></p>
     <p>{{ $data['message'] }}</p>
 </body>
 </html>

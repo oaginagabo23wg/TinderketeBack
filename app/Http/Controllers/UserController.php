@@ -146,24 +146,38 @@ class UserController extends Controller
 
 
     public function sendEmail(Request $request)
-{
-    // Validar los datos del formulario
-    $validated = $request->validate([
-        'id' => 'required|integer',
-        'name' => 'required|string|max:255',
-        'email' => 'required|email',
-        'message' => 'required|string',
-    ]);
+    {
+        // Validar los datos que vienen del frontend
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'message' => 'required|string',
+            'user_id' => 'nullable|integer|exists:users,id',  // Validación opcional de user_id
+        ]);
 
-    // Crear una instancia del mailable con los datos validados
-    $contactMail = new ContactMail($validated);
+        // Crear el arreglo de datos que se enviará al correo
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'message' => $validated['message'],
+        ];
 
-    // Enviar el correo a la dirección deseada
-    Mail::to('tinderkete@gmail.com')->send($contactMail);
+        // Si el usuario está logueado, agregar su user_id
+        if (isset($validated['user_id'])) {
+            $data['user_id'] = $validated['user_id'];
+        }
 
-    // Retornar respuesta JSON de éxito
-    return response()->json(['message' => 'Correo enviado correctamente'], 200);
-}
+        // Enviar el correo
+        try {
+            Mail::to('tinderkete@gmail.com') // Cambiar a la dirección de destino
+                ->send(new ContactMail($data));
+            return response()->json(['message' => 'Correo enviado correctamente'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al enviar el correo', 'error' => $e->getMessage()], 500);
+        }
+    }
 
 
 
