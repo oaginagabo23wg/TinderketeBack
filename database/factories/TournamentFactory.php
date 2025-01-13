@@ -25,9 +25,10 @@ class TournamentFactory extends Factory
     public function definition(): array
     {
         return [
-            'sport' => fake()->name(),
+            'title' => fake()->name(),
             'description' => fake()->name(),
             'date' => fake()->date(),
+            'time' => fake()->time(),
             'price' => fake()->numberBetween(10,90),
             'max_participants' => fake()->numberBetween(0,24),
             'location_id' => Location::inRandomOrder()->first()->id,

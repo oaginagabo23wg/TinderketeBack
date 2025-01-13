@@ -20,7 +20,7 @@ class User extends Authenticatable
         'admin',
         'hometown',
         'telephone',
-        'image',
+        'img',
         'aktibatua',
     ];
 
@@ -31,8 +31,15 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            //'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'birth_date' => 'date',
         ];
+    }
+
+    // Relations
+    public function tournament()
+    {
+        return $this->belongsToMany(Tournament::class, 'tournament_users');
     }
 }

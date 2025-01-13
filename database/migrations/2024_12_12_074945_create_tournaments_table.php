@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('tournaments', function (Blueprint $table) {
             $table->id();
-            $table->string('sport');
+            $table->string('title');
             $table->string('description');
             $table->date('date');
+            $table->time('time');
             $table->integer('price');
             $table->integer('max_participants');
             $table->unsignedBigInteger('location_id');
