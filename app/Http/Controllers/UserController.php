@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Mail\UserCreatedMail;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMail;
 
 class UserController extends Controller
 {
@@ -79,7 +82,10 @@ class UserController extends Controller
             'img' => $imagePath, // Asignar la imagen predeterminada
             'aktibatua' => '1',
         ]);
-    
+
+        // Enviar el correo al usuario recién creado
+        Mail::to($user->email)->send(new UserCreatedMail($user));
+
         // Crear un token para el usuario
         $token = $user->createToken('auth_token')->plainTextToken;
     
@@ -162,6 +168,42 @@ class UserController extends Controller
             'data' => $erabil
         ], 200);
     }
+
+
+    public function sendEmail(Request $request)
+    {
+        // Validar los datos que vienen del frontend
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'message' => 'required|string',
+            'user_id' => 'nullable|integer|exists:users,id',  // Validación opcional de user_id
+        ]);
+
+        // Crear el arreglo de datos que se enviará al correo
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'message' => $validated['message'],
+        ];
+
+        // Si el usuario está logueado, agregar su user_id
+        if (isset($validated['user_id'])) {
+            $data['user_id'] = $validated['user_id'];
+        }
+
+        // Enviar el correo
+        try {
+            Mail::to('tinderkete@gmail.com') // Cambiar a la dirección de destino
+                ->send(new ContactMail($data));
+            return response()->json(['message' => 'Correo enviado correctamente'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al enviar el correo', 'error' => $e->getMessage()], 500);
+        }
+    }
+
 
 
     // public function update(Request $request, $id)
