@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Mail\UserCreatedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMail;
 
 class UserController extends Controller
 {
@@ -142,6 +143,28 @@ class UserController extends Controller
             'data' => $erabil
         ], 200);
     }
+
+
+    public function sendEmail(Request $request)
+{
+    // Validar los datos del formulario
+    $validated = $request->validate([
+        'id' => 'required|integer',
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'message' => 'required|string',
+    ]);
+
+    // Crear una instancia del mailable con los datos validados
+    $contactMail = new ContactMail($validated);
+
+    // Enviar el correo a la dirección deseada
+    Mail::to('tinderkete@gmail.com')->send($contactMail);
+
+    // Retornar respuesta JSON de éxito
+    return response()->json(['message' => 'Correo enviado correctamente'], 200);
+}
+
 
 
     // public function update(Request $request, $id)
