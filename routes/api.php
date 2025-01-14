@@ -29,4 +29,4 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Reservation
-Route::apiResource('matches', ReservationController::class);
+Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);

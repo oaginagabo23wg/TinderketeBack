@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reservation;
 use App\Models\Location;
+use App\Models\User; // Importar el modelo User
+use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller
 {
@@ -27,19 +29,27 @@ class ReservationController extends Controller
         $validated = $request->validate([
             'date' => 'required|date',
             'time' => 'required|date_format:H:i',
-            'price' => 'required|numeric|min:0',
             'location_id' => 'required|exists:locations,id',
-            'public' => 'required|boolean',
         ]);
 
-        // Crear un nuevo partido
+        $validated['price'] = 20;
+        $validated['public'] = 0;
+
+        // Crear la nueva reserva
         $reservation = Reservation::create($validated);
+
+        // Obtener el id del usuario autenticado
+        $userId = Auth::id();
+
+        // Asegurarse de que la relación se cree correctamente en la tabla pivote
+        $reservation->users()->attach($userId);
 
         return response()->json([
             'message' => 'Reservation created successfully',
             'data' => $reservation
         ], 201);
     }
+
 
     /**
      * Display the specified reservation.
