@@ -20,7 +20,7 @@ class User extends Authenticatable
         'admin',
         'hometown',
         'telephone',
-        'image',
+        'img',
         'aktibatua',
     ];
 

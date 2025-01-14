@@ -20,33 +20,42 @@ class TournamentController extends Controller
         ], 200);
     }
     public function indexWithUsers($id = null)
-{
-    // Si se pasa un ID, buscar el torneo específico
-    if ($id) {
-        $tournament = Tournament::with('location', 'users')->find($id);
+    {
+        if ($id) {
+            $tournament = Tournament::with('location', 'users')->find($id);
 
-        // Verificar si el torneo existe
-        if (!$tournament) {
+            if (!$tournament) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tournament not found'
+                ], 404);
+            }
+
+            $tournament->location->img = url($tournament->location->img);
+            $tournament->users->each(function ($user) {
+                $user->img = url($user->img);
+            });
+
             return response()->json([
-                'success' => false,
-                'message' => 'Tournament not found'
-            ], 404);
+                'success' => true,
+                'data' => $tournament
+            ], 200);
         }
+
+        $tournaments = Tournament::with('location', 'users')->get()->map(function ($tournament) {
+            $tournament->location->img = url($tournament->location->img);
+            $tournament->users->each(function ($user) {
+                $user->img = url($user->img);
+            });
+
+            return $tournament;
+        });
 
         return response()->json([
             'success' => true,
-            'data' => $tournament
+            'data' => $tournaments
         ], 200);
     }
-
-    // Si no se pasa un ID, devolver todos los torneos con sus relaciones
-    $tournaments = Tournament::with('location', 'users')->get();
-
-    return response()->json([
-        'success' => true,
-        'data' => $tournaments
-    ], 200);
-}
 
 
     /**

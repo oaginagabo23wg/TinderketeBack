@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use App\Mail\UserCreatedMail;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMail;
 
 class UserController extends Controller
 {
@@ -19,7 +22,7 @@ class UserController extends Controller
     {
         if ($id) {
             $erabil = User::find($id);
-    
+
             // Verificar si el torneo existe
             if (!$erabil) {
                 return response()->json([
@@ -27,7 +30,7 @@ class UserController extends Controller
                     'message' => 'Erabiltzailea ez da aurkitu'
                 ], 404);
             }
-    
+
             return response()->json([
                 'success' => true,
                 'data' => $erabil
@@ -40,10 +43,9 @@ class UserController extends Controller
             'success' => true,
             'data' => $user
         ], 200);
-        
     }
 
-    
+
 
     public function register(Request $request)
     {
@@ -56,16 +58,16 @@ class UserController extends Controller
             'birth_date' => 'required|date|before:-18 years',
             // Ya no es necesario validar la imagen si siempre será 'public/perfiltxuri.png'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
             ], 422);
         }
-    
+
         // Asignar siempre la imagen predeterminada
         $imagePath = 'public/perfiltxuri.png';  // Ruta predeterminada para la imagen
-    
+
         // Crear el usuario
         $user = User::create([
             'name' => $request->name,
@@ -79,13 +81,16 @@ class UserController extends Controller
             'img' => $imagePath, // Asignar la imagen predeterminada
             'aktibatua' => '1',
         ]);
-    
+
+        // Enviar el correo al usuario recién creado
+        Mail::to($user->email)->send(new UserCreatedMail($user));
+
         // Crear un token para el usuario
         $token = $user->createToken('auth_token')->plainTextToken;
-    
+
         // Generar la URL pública de la imagen
         $imageUrl = asset('storage/' . $imagePath); // Asegúrate de que storage:link esté creado
-    
+
         // Devolver los datos del usuario y el token
         return response()->json([
             'message' => 'Usuario creado con éxito',
@@ -93,6 +98,47 @@ class UserController extends Controller
             'token' => $token,
             'image_url' => $imageUrl, // Incluir la URL pública de la imagen
         ], 201);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
+            'email' => 'required|email',
+            'password' => 'required|string|max:255',
+            'hometown' => 'nullable|string|max:255',
+            'telephone' => 'nullable|string|max:15',
+            'birth_date' => 'required|date',
+            'admin' => 'required|boolean',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'aktibatua' => 'required|boolean',
+        ]);
+
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;
+        }
+
+        $user = User::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $user,
+        ], 201);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Validación de la imagen
+        ]);
+
+        // Guardar la imagen en la carpeta 'public' dentro de 'storage/app'
+        $imagePath = $request->file('image')->store('images', 'public');
+
+        // Devolver el path de la imagen
+        return response()->json(['imagePath' => $imagePath]);
     }
     
 
@@ -120,13 +166,57 @@ class UserController extends Controller
             'aktibatua' => 'sometimes|boolean',
         ]);
 
+        // Solo actualizar la imagen si se proporciona una nueva
+    if ($request->hasFile('image')) {
+        // Si se sube una nueva imagen, validarla y guardarla
+        $imagePath = $request->file('image')->store('images', 'public');
+        $validated['image'] = $imagePath;  // Guardamos la ruta de la imagen
+    }
+
         $erabil->update($validated);
 
         return response()->json([
             'success' => true,
+            'message' => 'User updated successfully',
             'data' => $erabil
         ], 200);
     }
+
+
+    public function sendEmail(Request $request)
+    {
+        // Validar los datos que vienen del frontend
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'message' => 'required|string',
+            'user_id' => 'nullable|integer|exists:users,id',  // Validación opcional de user_id
+        ]);
+
+        // Crear el arreglo de datos que se enviará al correo
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'message' => $validated['message'],
+        ];
+
+        // Si el usuario está logueado, agregar su user_id
+        if (isset($validated['user_id'])) {
+            $data['user_id'] = $validated['user_id'];
+        }
+
+        // Enviar el correo
+        try {
+            Mail::to('tinderkete@gmail.com') // Cambiar a la dirección de destino
+                ->send(new ContactMail($data));
+            return response()->json(['message' => 'Correo enviado correctamente'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al enviar el correo', 'error' => $e->getMessage()], 500);
+        }
+    }
+
 
 
     // public function update(Request $request, $id)
@@ -196,79 +286,77 @@ class UserController extends Controller
     // }
 
     public function login(Request $request)
-{
-    // Validar los datos del login
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string',
-    ]);
+    {
+        // Validar los datos del login
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-    // Verificar si el usuario existe y si la contraseña es correcta
-    $user = User::where('email', $request->email)->first();
+        // Verificar si el usuario existe y si la contraseña es correcta
+        $user = User::where('email', $request->email)->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        // Si no se encuentra el usuario o la contraseña es incorrecta
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            // Si no se encuentra el usuario o la contraseña es incorrecta
+            return response()->json([
+                'message' => 'Las credenciales proporcionadas no son válidas.',
+            ], 401);
+        }
+
+        // Crear un token para el usuario
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        // Devolver el token y los datos del usuario
         return response()->json([
-            'message' => 'Las credenciales proporcionadas no son válidas.',
-        ], 401);
+            'user' => $user,  // Incluye toda la información del usuario, incluyendo el valor de 'admin'
+            'token' => $token,
+        ]);
     }
-
-    // Crear un token para el usuario
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    // Devolver el token y los datos del usuario
-    return response()->json([
-        'user' => $user,  // Incluye toda la información del usuario, incluyendo el valor de 'admin'
-        'token' => $token,
-    ]);
-}
 
 
     public function getUser(Request $request)
-{
-    // Recupera el usuario autenticado
-    $user = $request->user(); // Asumiendo que estás utilizando Sanctum para autenticación
+    {
+        // Recupera el usuario autenticado
+        $user = $request->user(); // Asumiendo que estás utilizando Sanctum para autenticación
 
-    if (!$user) {
+        if (!$user) {
+            return response()->json([
+                'message' => 'Usuario no autenticado',
+            ], 401);
+        }
+
+        // Genera la URL pública de la imagen
+        $imageUrl = asset('storage/' . $user->img); // Asegúrate de que storage:link esté creado
+
         return response()->json([
-            'message' => 'Usuario no autenticado',
-        ], 401);
+            'user' => $user,
+            'image_url' => $imageUrl, // Incluir la URL pública de la imagen
+        ]);
     }
 
-    // Genera la URL pública de la imagen
-    $imageUrl = asset('storage/' . $user->img); // Asegúrate de que storage:link esté creado
+    // Añadir este método a tu controlador UserController
 
-    return response()->json([
-        'user' => $user,
-        'image_url' => $imageUrl, // Incluir la URL pública de la imagen
-    ]);
-}
+    public function delete(Request $request, $id)
+    {
+        // Buscar al usuario por ID
+        $user = User::find($id);
 
-// Añadir este método a tu controlador UserController
+        // Verificar si el usuario existe
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario no encontrado',
+            ], 404);
+        }
 
-public function delete(Request $request, $id)
-{
-    // Buscar al usuario por ID
-    $user = User::find($id);
+        // Actualizar el campo aktibatua a 0 para desactivar al usuario
+        $user->aktibatua = 0;
+        $user->save();
 
-    // Verificar si el usuario existe
-    if (!$user) {
         return response()->json([
-            'success' => false,
-            'message' => 'Usuario no encontrado',
-        ], 404);
+            'success' => true,
+            'message' => 'Usuario desactivado correctamente',
+            'user' => $user
+        ], 200);
     }
-
-    // Actualizar el campo aktibatua a 0 para desactivar al usuario
-    $user->aktibatua = 0;
-    $user->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Usuario desactivado correctamente',
-        'user' => $user
-    ], 200);
-}
-
-
 }
