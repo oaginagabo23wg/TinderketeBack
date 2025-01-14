@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\TournamentUserController;
+use App\Http\Controllers\ReservationController;
 
 // User
 Route::post('/register', [UserController::class, 'register']);
@@ -26,3 +27,6 @@ Route::get('/txapelketak-with-users/{id?}', [TournamentController::class, 'index
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tournaments/{id}/register', [TournamentUserController::class, 'bookIn']);
 });
+
+// Reservation
+Route::apiResource('matches', ReservationController::class);
