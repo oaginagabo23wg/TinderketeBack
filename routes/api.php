@@ -6,11 +6,10 @@ use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserController;
 
-
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/userStore', [UserController::class, 'store']);
-Route::get('/getUser/{id?}', [UserController::class, 'index']);
+Route::get('/getUser/{id?}', [UserController::class, 'index']);//Erabiltzailearen datuak lortu
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::patch('/deleteUser/{id}', [UserController::class, 'delete']); 
 Route::apiResource('txapelketak', TournamentController::class);
@@ -18,6 +17,8 @@ Route::get('/txapelketak-with-users/{id?}', [TournamentController::class, 'index
 Route::apiResource('lokalekuak', LocationController::class);
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUser']);
 Route::post('/send-email', [UserController::class, 'sendEmail']);
+Route::post('upload-image', [UserController::class, 'uploadImage']);
+
 
 
 

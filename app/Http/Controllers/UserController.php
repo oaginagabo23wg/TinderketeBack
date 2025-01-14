@@ -127,6 +127,19 @@ class UserController extends Controller
             'data' => $user,  
         ], 201);
     }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Validación de la imagen
+        ]);
+
+        // Guardar la imagen en la carpeta 'public' dentro de 'storage/app'
+        $imagePath = $request->file('image')->store('images', 'public');
+
+        // Devolver el path de la imagen
+        return response()->json(['imagePath' => $imagePath]);
+    }
     
 
     public function update(Request $request, string $id)
