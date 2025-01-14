@@ -14,8 +14,9 @@ Route::patch('/deleteUser/{id}', [UserController::class, 'delete']);
 Route::apiResource('txapelketak', TournamentController::class);
 Route::get('/txapelketak-with-users/{id?}', [TournamentController::class, 'indexWithUsers']);
 Route::apiResource('lokalekuak', LocationController::class);
-// Route::patch('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
-
+Route::get('/getMap/{id}', [LocationController::class, 'index']);
+Route::put('/mapak/{id}', [LocationController::class, 'update']);
+Route::patch('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUser']);
 
 

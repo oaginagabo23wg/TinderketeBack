@@ -10,14 +10,32 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id = null)
     {
-        $locations = Location::all(); // Obtiene todas las ubicaciones
+        if ($id) {
+            $mapa = Location::find($id);
+    
+            // Verificar si el torneo existe
+            if (!$mapa) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mapa ez da aurkitu'
+                ], 404);
+            }
+    
+            return response()->json([
+                'success' => true,
+                'data' => $mapa
+            ], 200);
+        }
+
+        $mapa = Location::all(); //Erabiltzaile guztiak hartu
+
         return response()->json([
             'success' => true,
-            'data' => $locations,
-        ]);
-
+            'data' => $mapa
+        ], 200);
+        
     }
 
     /**
@@ -72,27 +90,27 @@ class LocationController extends Controller
     public function update(Request $request, string $id)
     {
         $location = Location::find($id);
-
+    
         if (!$location) {
             return response()->json(['message' => 'Location not found'], 404);
         }
-
+    
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
             'img' => 'required|string|max:255',
             'iframe' => 'required|string|max:1024',
-            'url' => 'required|string|max:512'
+            'url' => 'required|string|max:512',
         ]);
-
-        $location->update([$validated]);
-
+    
+        $location->update($validated);
+    
         return response()->json([
             'success' => true,
             'data' => $location,
         ]);
-
     }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -113,27 +131,26 @@ class LocationController extends Controller
         ]);
 
     }
-//     public function delete(Request $request, $id)
-// {
-//     // Buscar al usuario por ID
-//     $location = Location::find($id);
-
-//     // Verificar si el usuario existe
-//     if (!$location) {
-//         return response()->json([
-//             'success' => false,
-//             'message' => 'Usuario no encontrado',
-//         ], 404);
-//     }
-
-//     // Actualizar el campo aktibatua a 0 para desactivar al usuario
-//     $location->aktibatua = 0;
-//     $location->save();
-
-//     return response()->json([
-//         'success' => true,
-//         'message' => 'Usuario desactivado correctamente',
-//         'location' => $location
-//     ], 200);
-// }
+    public function delete(Request $request, $id)
+    {
+        // Buscar el usuario por ID
+        $location = Location::find($id);
+    
+        // Verificar si el usuario existe
+        if (!$location) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario no encontrado',
+            ], 404);
+        }
+    
+        // Eliminar el usuario
+        $location->delete();
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario eliminado correctamente'
+        ], 200);
+    }
+    
 }

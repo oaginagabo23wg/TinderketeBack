@@ -52,7 +52,6 @@ class DatabaseSeeder extends Seeder
             'url' => 'https://www.google.com/maps/place//data=!4m2!3m1!1s0xd51baa707632f93:0x8680d5efa9844049?sa=X&ved=1t:8290&ictx=111'
         ]);
 
-        Location::factory(6)->create();
 
         $txapelketa = Tournament::factory()->create([
             'title' => 'Trinkete txapelketa!',
