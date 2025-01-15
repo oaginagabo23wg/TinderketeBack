@@ -166,32 +166,35 @@ class ReservationController extends Controller
     /**
      * Add a user to a reservation.
      */
-    public function addUser(Request $request, $id)
+    public function addUser($id)
     {
-        // Validar el usuario
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id', // Validamos que el user_id exista
-        ]);
+        // Verificar si el usuario está autenticado
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => $user], 401);  // Retorna un error 401 si no hay usuario autenticado
+        }
 
         // Buscar la reserva
         $reservation = Reservation::find($id);
 
         if (!$reservation) {
-            return response()->json(['message' => 'Reservation not found'], 404); // Si no existe la reserva
+            return response()->json(['message' => 'Reservation not found'], 404);
         }
 
-        // Verificar si el usuario ya está agregado a la reserva
-        if ($reservation->users()->where('user_id', $validated['user_id'])->exists()) {
+        // Verificar si el usuario ya está en la reserva
+        if ($reservation->users()->where('user_id', $user->id)->exists()) {
             return response()->json(['message' => 'User is already added to this reservation'], 400);
         }
 
         // Agregar el usuario a la reserva
-        $reservation->users()->attach($validated['user_id']); // Esta es la línea que agrega al usuario a la tabla intermedia
+        $reservation->users()->attach($user->id);
 
         return response()->json([
             'message' => 'User added to reservation successfully',
         ], 200);
     }
+
 
 
     /**

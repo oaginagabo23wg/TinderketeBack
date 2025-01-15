@@ -30,6 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Reservation
 Route::get('/reservations', [ReservationController::class, 'index']);
-Route::middleware('auth:sanctum')->post('/reservations/{id}', [ReservationController::class, 'addUser']);
+Route::post('/reservation/{id}/addUser', [ReservationController::class, 'addUser']);
 Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/reservation/reservationUser', [ReservationController::class, 'reservationUser']);
