@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use app\Models\Reservation;
+use App\Models\Reservation;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -44,8 +44,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Tournament::class, 'tournament_users');
     }
 
-    public function reservations () 
+    public function reservations()
     {
-        return $this->belongsToMany(Reservation::class, 'reservation_user');    
+        return $this->belongsToMany(Reservation::class, 'reservation_user');
     }
 }

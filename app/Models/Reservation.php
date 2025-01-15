@@ -23,9 +23,9 @@ class Reservation extends Model
         return $this->belongsTo(Location::class);
     }
 
+    
     public function users()
     {
-        return $this->belongsToMany(User::class, 'reservation_user', 'reservation_id', 'user_id')
-                    ->withTimestamps();
+        return $this->belongsToMany(User::class, 'reservation_user');
     }
 }
