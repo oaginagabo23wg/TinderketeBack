@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\ReservationUser;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\TournamentController;
-use App\Http\Controllers\TournamentUserController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\TournamentUserController;
+use App\Http\Controllers\ReservationUserController;
 
 // User
 Route::post('/register', [UserController::class, 'register']);
@@ -30,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Reservation
 Route::get('/reservations', [ReservationController::class, 'index']);
-Route::post('/reservation/{id}/addUser', [ReservationController::class, 'addUser']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/matches/{id}/users', [ReservationUserController::class, 'addUser']);
+});
 Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/reservation/reservationUser', [ReservationController::class, 'reservationUser']);
