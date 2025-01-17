@@ -8,7 +8,6 @@ use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TournamentUserController;
 use App\Http\Controllers\ReservationUserController;
-
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/userStore', [UserController::class, 'store']);
@@ -45,3 +44,4 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/reservation/reservationUser', [ReservationController::class, 'reservationUser']);
+

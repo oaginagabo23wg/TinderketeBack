@@ -285,8 +285,9 @@ class UserController extends Controller
     //     ], 200);
     // }
 
-    public function login(Request $request)
-    {
+public function login(Request $request)
+{
+    try {
         // Validar los datos del login
         $request->validate([
             'email' => 'required|email',
@@ -311,7 +312,14 @@ class UserController extends Controller
             'user' => $user,  // Incluye toda la información del usuario, incluyendo el valor de 'admin'
             'token' => $token,
         ]);
+    } catch (\Exception $e) {
+        \Log::error('Login failed: ' . $e->getMessage(), ['exception' => $e]);
+
+        return response()->json([
+            'message' => 'Hubo un error en el proceso de inicio de sesión.',
+        ], 500);
     }
+}
 
 
     public function getUser(Request $request)
