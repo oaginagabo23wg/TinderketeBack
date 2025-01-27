@@ -11,7 +11,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/userStore', [UserController::class, 'store']);
 Route::get('/getUser/{id?}', [UserController::class, 'index']);//Erabiltzailearen datuak lortu
 Route::put('/user/{id}', [UserController::class, 'update']);
-Route::patch('/deleteUser/{id}', [UserController::class, 'delete']); 
+Route::delete('/deleteUser/{id}', [UserController::class, 'delete']); 
 Route::apiResource('txapelketak', TournamentController::class);
 Route::get('/txapelketak-with-users/{id?}', [TournamentController::class, 'indexWithUsers']);
 Route::apiResource('lokalekuak', LocationController::class);
