@@ -160,8 +160,8 @@ class UserController extends Controller
             'password' => 'sometimes|string|min:8|confirmed',
             'birth_date' => 'sometimes|date|before:-18 years',
             'admin' => 'sometimes|boolean',
-            'hometown' => 'sometimes|string',
-            'telephone' => 'sometimes|string',
+            'hometown' => 'nullable|string',
+            'telephone' => 'nullable|string',
             'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
             'aktibatua' => 'sometimes|boolean',
         ]);

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('telephone')->nullable();
             $table->date('birth_date');
             $table->boolean('admin');
-            $table->string('img')->default('public/perfiltxuri.png');
+            $table->string('img')->default('1361728.png');
             $table->boolean('aktibatua');
             $table->timestamps();
         });
