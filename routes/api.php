@@ -9,29 +9,29 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TournamentUserController;
 use App\Http\Controllers\ReservationUserController;
 
+//Auth
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
+
+//Users
 Route::post('/userStore', [UserController::class, 'store']);
-Route::get('/getUser/{id?}', [UserController::class, 'index']);//Erabiltzailearen datuak lortu
+Route::get('/getUser/{id?}', [UserController::class, 'index']);
 Route::put('/user/{id}', [UserController::class, 'update']);
-Route::patch('/deleteUser/{id}', [UserController::class, 'delete']); 
-Route::apiResource('txapelketak', TournamentController::class);
-Route::get('/txapelketak-with-users/{id?}', [TournamentController::class, 'indexWithUsers']);
-Route::apiResource('lokalekuak', LocationController::class);
-Route::get('/getMap/{id}', [LocationController::class, 'index']);
-Route::put('/mapak/{id}', [LocationController::class, 'update']);
-Route::patch('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
+Route::patch('/deleteUser/{id}', [UserController::class, 'delete']);
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUser']);
 Route::post('/send-email', [UserController::class, 'sendEmail']);
 Route::post('upload-image', [UserController::class, 'uploadImage']);
 
-
 // Location
 Route::apiResource('lokalekuak', LocationController::class);
+Route::get('/getMap/{id}', [LocationController::class, 'index']);
+Route::put('/mapak/{id}', [LocationController::class, 'update']);
+Route::patch('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
 
 // Tournament
 Route::apiResource('txapelketak', TournamentController::class);
 Route::get('/txapelketak-with-users/{id?}', [TournamentController::class, 'indexWithUsers']);
+
 
 // TournamentUser
 Route::middleware('auth:sanctum')->group(function () {
