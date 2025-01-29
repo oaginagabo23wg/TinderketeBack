@@ -49,14 +49,12 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'birth_date' => 'required|date|before:-18 years',
-            // Ya no es necesario validar la imagen si siempre será 'public/perfiltxuri.png'
         ]);
 
         if ($validator->fails()) {
@@ -65,38 +63,29 @@ class UserController extends Controller
             ], 422);
         }
 
-        // Asignar siempre la imagen predeterminada
-        $imagePath = 'public/perfiltxuri.png';  // Ruta predeterminada para la imagen
+        $imagePath = '1361728.png';  
 
-        // Crear el usuario
         $user = User::create([
             'name' => $request->name,
             'surname' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'birth_date' => Carbon::parse($request->birth_date),
-            'admin' => '0', // Valor predeterminado de 'admin'
+            'admin' => '0',
             'hometown' => $request->hometown ?? null,
             'telephone' => $request->telephone ?? null,
-            'img' => $imagePath, // Asignar la imagen predeterminada
+            'img' => $imagePath,
             'aktibatua' => '1',
         ]);
 
-        // Enviar el correo al usuario recién creado
         Mail::to($user->email)->send(new UserCreatedMail($user));
 
-        // Crear un token para el usuario
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Generar la URL pública de la imagen
-        $imageUrl = asset('storage/' . $imagePath); // Asegúrate de que storage:link esté creado
-
-        // Devolver los datos del usuario y el token
         return response()->json([
             'message' => 'Erabiltzailea ongi sortu da',
             'user' => $user,
             'token' => $token,
-            'image_url' => $imageUrl, // Incluir la URL pública de la imagen
         ], 201);
     }
 
