@@ -9,7 +9,7 @@
     <h1>Erabiltzailea ongi sortu da!</h1>
     <p>Kaixo {{ $user->name }}!</p>
     <p>Ongi etorri gure plataformara. Egin klik esteka honetan zure kontuan saioa hasteko:</p>
-    <a href="http://localhost:3000/login">Login egiteko esteka</a>
+    <a href="{{ env('APP_URL') }}:3000/login">Login egiteko esteka</a>
     <p>Eskerrik asko gure zerbitzuetan izena emateagatik!</p>
 </body>
 </html>
