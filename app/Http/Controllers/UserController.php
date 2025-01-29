@@ -93,7 +93,7 @@ class UserController extends Controller
 
         // Devolver los datos del usuario y el token
         return response()->json([
-            'message' => 'Usuario creado con éxito',
+            'message' => 'Erabiltzailea ongi sortu da',
             'user' => $user,
             'token' => $token,
             'image_url' => $imageUrl, // Incluir la URL pública de la imagen
@@ -149,7 +149,7 @@ class UserController extends Controller
         if (!$erabil) {
             return response()->json([
                 'success' => false,
-                'message' => 'erabil not found'
+                'message' => 'Erabiltzailea ez da aurkitu'
             ], 404);
         }
 
@@ -177,7 +177,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'User updated successfully',
+            'message' => 'Erabiltzailea ongi aldatu da.',
             'data' => $erabil
         ], 200);
     }
@@ -211,9 +211,9 @@ class UserController extends Controller
         try {
             Mail::to('tinderkete@gmail.com') // Cambiar a la dirección de destino
                 ->send(new ContactMail($data));
-            return response()->json(['message' => 'Correo enviado correctamente'], 200);
+            return response()->json(['message' => 'Mezua ongi biali da'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al enviar el correo', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Errorea mezua bialtzerakoan', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -225,7 +225,7 @@ class UserController extends Controller
 
     //     if (!$user) {
     //         return response()->json([
-    //             'message' => 'Usuario no encontrado.'
+    //             'message' => 'Ez da erabiltzailea aurkitu.'
     //         ], 404);
     //     }
 
@@ -299,7 +299,7 @@ class UserController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             // Si no se encuentra el usuario o la contraseña es incorrecta
             return response()->json([
-                'message' => 'Las credenciales proporcionadas no son válidas.',
+                'message' => 'Kredentzialak ez dira baliozkoak.',
             ], 401);
         }
 
@@ -321,7 +321,7 @@ class UserController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message' => 'Usuario no autenticado',
+                'message' => 'Erabiltzailea ez da aurkitu',
             ], 401);
         }
 
@@ -345,7 +345,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Usuario no encontrado',
+                'message' => 'Ez da erabiltzailea aurkitu',
             ], 404);
         }
 
@@ -355,7 +355,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Usuario desactivado correctamente',
+            'message' => 'Erabiltzailea ongi desaktibatuta',
             'user' => $user
         ], 200);
     }

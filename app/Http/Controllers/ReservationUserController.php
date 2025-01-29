@@ -22,19 +22,19 @@ class ReservationUserController extends Controller
         $reservation = Reservation::find($request->id);
 
         if (!$reservation) {
-            return response()->json(['message' => 'Reservation not found'], 404);
+            return response()->json(['message' => 'Erreserba ez da aurkitu'], 404);
         }
 
         // Verificar si el usuario ya está en la reserva
         if ($reservation->users()->where('user_id', $user->id)->exists()) {
-            return response()->json(['message' => 'User is already added to this reservation'], 400);
+            return response()->json(['message' => 'Erabiltzailea iada izena emanda dago partidoan'], 400);
         }
 
         // Agregar el usuario a la reserva
         $reservation->users()->attach($user->id);
 
         return response()->json([
-            'message' => 'User added to reservation successfully',
+            'message' => 'Ongi eman da izena partidoan',
         ], 200);
     }
 }

@@ -92,7 +92,7 @@ class LocationController extends Controller
         $location = Location::find($id);
     
         if (!$location) {
-            return response()->json(['message' => 'Location not found'], 404);
+            return response()->json(['message' => 'Ez da kokalekurik aurkitu'], 404);
         }
     
         $validated = $request->validate([
@@ -120,14 +120,14 @@ class LocationController extends Controller
         $location = Location::find($id);
 
         if (!$location) {
-            return response()->json(['message' => 'Location not found'], 404);
+            return response()->json(['message' => 'Ez da kokalekurik aurkitu'], 404);
         }
 
         $location->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Location deleted successfully',
+            'message' => 'Kokalekua ongi ezabatu da',
         ]);
 
     }
@@ -140,7 +140,7 @@ class LocationController extends Controller
         if (!$location) {
             return response()->json([
                 'success' => false,
-                'message' => 'Usuario no encontrado',
+                'message' => 'Erabiltzailea ez da aurkitu',
             ], 404);
         }
     
@@ -149,7 +149,7 @@ class LocationController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'Usuario eliminado correctamente'
+            'message' => 'Erabiltzailea ongi ezabatu da'
         ], 200);
     }
     

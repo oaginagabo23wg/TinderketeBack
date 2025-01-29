@@ -48,12 +48,12 @@ class AuthController extends Controller
             $user->save();
 
             return response()->json([
-                'message' => 'Welcome!',
+                'message' => 'Ongi etorri!',
                 'user' => $user,
                 'token' => $token,  // Este es el token generado
             ]);
         }
 
-        return response()->json(['message' => 'Incorrect credentials'], 401);
+        return response()->json(['message' => 'Kredentzial okerrak'], 401);
     }
 }
