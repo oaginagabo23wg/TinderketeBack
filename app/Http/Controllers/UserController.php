@@ -134,7 +134,7 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $erabil = User::find($id);
-
+        
         if (!$erabil) {
             return response()->json([
                 'success' => false,
@@ -151,16 +151,17 @@ class UserController extends Controller
             'admin' => 'sometimes|boolean',
             'hometown' => 'nullable|string',
             'telephone' => 'nullable|string',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
+            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
             'aktibatua' => 'sometimes|boolean',
         ]);
 
-        // Solo actualizar la imagen si se proporciona una nueva
-    if ($request->hasFile('image')) {
-        // Si se sube una nueva imagen, validarla y guardarla
-        $imagePath = $request->file('image')->store('images', 'public');
-        $validated['image'] = $imagePath;  // Guardamos la ruta de la imagen
-    }
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;
+        } else {
+            // Keep existing image path if no new image is uploaded
+            $validated['img'] = $erabil->img;
+        }
 
         $erabil->update($validated);
 

@@ -16,7 +16,7 @@ Route::post('/login', [UserController::class, 'login']);
 //Users
 Route::post('/userStore', [UserController::class, 'store']);
 Route::get('/getUser/{id?}', [UserController::class, 'index']);
-Route::put('/user/{id}', [UserController::class, 'update']);
+Route::post('/user/{id}', [UserController::class, 'update']);
 Route::patch('/deleteUser/{id}', [UserController::class, 'delete']);
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUser']);
 Route::post('/send-email', [UserController::class, 'sendEmail']);
