@@ -58,7 +58,7 @@ class ReservationController extends Controller
 
         if ($existingReservation) {
             return response()->json([
-                'message' => 'A reservation already exists for this location and time.',
+                'message' => 'Erreserba iada existitzen da kokaleku eta ordu hortan.',
             ], 422); // 422 Unprocessable Entity
         }
 
@@ -76,7 +76,7 @@ class ReservationController extends Controller
         $reservation->users()->attach($userId);
 
         return response()->json([
-            'message' => 'Reservation created successfully',
+            'message' => 'Erreserba ongi gorde da',
             'data' => $reservation
         ], 201);
     }
@@ -87,7 +87,7 @@ class ReservationController extends Controller
         $user = Auth::user();
 
         if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'Saioa hasi gabea'], 401);
         }
 
         $reservations = $user->reservations()->with('location')->get();
@@ -109,7 +109,7 @@ class ReservationController extends Controller
         $reservation = Reservation::with('location')->find($id);
 
         if (!$reservation) {
-            return response()->json(['message' => 'Reservation not found'], 404);
+            return response()->json(['message' => 'Ez da erreserba aurkitu'], 404);
         }
 
         return response()->json($reservation, 200);
@@ -124,7 +124,7 @@ class ReservationController extends Controller
         $reservation = Reservation::find($id);
 
         if (!$reservation) {
-            return response()->json(['message' => 'Reservation not found'], 404);
+            return response()->json(['message' => 'Ez da erreserba aurkitu'], 404);
         }
 
         // Validar datos de entrada
@@ -140,7 +140,7 @@ class ReservationController extends Controller
         $reservation->update($validated);
 
         return response()->json([
-            'message' => 'Reservation updated successfully',
+            'message' => 'Erreserba ongi aldatu da',
             'data' => $reservation
         ], 200);
     }
@@ -154,12 +154,12 @@ class ReservationController extends Controller
         $reservation = Reservation::find($id);
 
         if (!$reservation) {
-            return response()->json(['message' => 'Reservation not found'], 404);
+            return response()->json(['message' => 'Ez da erreserba aurkitu'], 404);
         }
 
         // Eliminar el partido
         $reservation->delete();
 
-        return response()->json(['message' => 'Reservation deleted successfully'], 200);
+        return response()->json(['message' => 'Erreserba ongi ezabatu da'], 200);
     }
 }

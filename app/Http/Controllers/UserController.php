@@ -49,14 +49,12 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'surname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'birth_date' => 'required|date|before:-18 years',
-            // Ya no es necesario validar la imagen si siempre será 'public/perfiltxuri.png'
         ]);
 
         if ($validator->fails()) {
@@ -65,38 +63,29 @@ class UserController extends Controller
             ], 422);
         }
 
-        // Asignar siempre la imagen predeterminada
-        $imagePath = 'public/perfiltxuri.png';  // Ruta predeterminada para la imagen
+        $imagePath = '1361728.png';  
 
-        // Crear el usuario
         $user = User::create([
             'name' => $request->name,
             'surname' => $request->surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'birth_date' => Carbon::parse($request->birth_date),
-            'admin' => '0', // Valor predeterminado de 'admin'
+            'admin' => '0',
             'hometown' => $request->hometown ?? null,
             'telephone' => $request->telephone ?? null,
-            'img' => $imagePath, // Asignar la imagen predeterminada
+            'img' => $imagePath,
             'aktibatua' => '1',
         ]);
 
-        // Enviar el correo al usuario recién creado
         Mail::to($user->email)->send(new UserCreatedMail($user));
 
-        // Crear un token para el usuario
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Generar la URL pública de la imagen
-        $imageUrl = asset('storage/' . $imagePath); // Asegúrate de que storage:link esté creado
-
-        // Devolver los datos del usuario y el token
         return response()->json([
-            'message' => 'Usuario creado con éxito',
+            'message' => 'Erabiltzailea ongi sortu da',
             'user' => $user,
             'token' => $token,
-            'image_url' => $imageUrl, // Incluir la URL pública de la imagen
         ], 201);
     }
 
@@ -145,11 +134,11 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $erabil = User::find($id);
-
+        
         if (!$erabil) {
             return response()->json([
                 'success' => false,
-                'message' => 'erabil not found'
+                'message' => 'Erabiltzailea ez da aurkitu'
             ], 404);
         }
 
@@ -160,24 +149,25 @@ class UserController extends Controller
             'password' => 'sometimes|string|min:8|confirmed',
             'birth_date' => 'sometimes|date|before:-18 years',
             'admin' => 'sometimes|boolean',
-            'hometown' => 'sometimes|string',
-            'telephone' => 'sometimes|string',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
+            'hometown' => 'nullable|string',
+            'telephone' => 'nullable|string',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
             'aktibatua' => 'sometimes|boolean',
         ]);
 
-        // Solo actualizar la imagen si se proporciona una nueva
-    if ($request->hasFile('image')) {
-        // Si se sube una nueva imagen, validarla y guardarla
-        $imagePath = $request->file('image')->store('images', 'public');
-        $validated['image'] = $imagePath;  // Guardamos la ruta de la imagen
-    }
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;
+        } else {
+            // Keep existing image path if no new image is uploaded
+            $validated['img'] = $erabil->img;
+        }
 
         $erabil->update($validated);
 
         return response()->json([
             'success' => true,
-            'message' => 'User updated successfully',
+            'message' => 'Erabiltzailea ongi aldatu da.',
             'data' => $erabil
         ], 200);
     }
@@ -211,9 +201,9 @@ class UserController extends Controller
         try {
             Mail::to('tinderkete@gmail.com') // Cambiar a la dirección de destino
                 ->send(new ContactMail($data));
-            return response()->json(['message' => 'Correo enviado correctamente'], 200);
+            return response()->json(['message' => 'Mezua ongi biali da'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al enviar el correo', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Errorea mezua bialtzerakoan', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -225,7 +215,7 @@ class UserController extends Controller
 
     //     if (!$user) {
     //         return response()->json([
-    //             'message' => 'Usuario no encontrado.'
+    //             'message' => 'Ez da erabiltzailea aurkitu.'
     //         ], 404);
     //     }
 
@@ -300,7 +290,7 @@ public function login(Request $request)
         if (!$user || !Hash::check($request->password, $user->password)) {
             // Si no se encuentra el usuario o la contraseña es incorrecta
             return response()->json([
-                'message' => 'Las credenciales proporcionadas no son válidas.',
+                'message' => 'Kredentzialak ez dira baliozkoak.',
             ], 401);
         }
 
@@ -329,7 +319,7 @@ public function login(Request $request)
 
         if (!$user) {
             return response()->json([
-                'message' => 'Usuario no autenticado',
+                'message' => 'Erabiltzailea ez da aurkitu',
             ], 401);
         }
 
@@ -353,7 +343,7 @@ public function login(Request $request)
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Usuario no encontrado',
+                'message' => 'Ez da erabiltzailea aurkitu',
             ], 404);
         }
 
@@ -363,7 +353,7 @@ public function login(Request $request)
 
         return response()->json([
             'success' => true,
-            'message' => 'Usuario desactivado correctamente',
+            'message' => 'Erabiltzailea ongi desaktibatuta',
             'user' => $user
         ], 200);
     }

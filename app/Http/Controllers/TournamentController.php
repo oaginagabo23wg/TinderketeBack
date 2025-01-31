@@ -27,7 +27,7 @@ class TournamentController extends Controller
             if (!$tournament) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Tournament not found'
+                    'message' => 'Txapelketa ez da aurkitu'
                 ], 404);
             }
 
@@ -115,7 +115,7 @@ class TournamentController extends Controller
         if (!$tournament) {
             return response()->json([
                 'success' => false,
-                'message' => 'Tournament not found'
+                'message' => 'Txapelketa ez da aurkitu'
             ], 404);
         }
 
@@ -146,7 +146,7 @@ class TournamentController extends Controller
         if (!$tournament) {
             return response()->json([
                 'success' => false,
-                'message' => 'Tournament not found'
+                'message' => 'Txapelketa ez da aurkitu'
             ], 404);
         }
     
@@ -154,7 +154,7 @@ class TournamentController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'Tournament deleted successfully'
+            'message' => 'Ongi ezabatu da txapelketa'
         ], 200);
     
     }

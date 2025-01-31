@@ -40,7 +40,7 @@ class ProfileController extends Controller
 
         // Devolver una respuesta exitosa
         return response()->json([
-            'message' => 'Perfil actualizado correctamente.',
+            'message' => 'Profila ongi aldatu da.',
             'data' => $user
         ]);
     }
