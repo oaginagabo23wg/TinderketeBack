@@ -54,7 +54,7 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'img' => 'required|string|max:255',
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'iframe' => 'required|string|max:1024',
             'url' => 'required|string|max:512'
         ]);
@@ -98,7 +98,7 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'img' => 'required|string|max:255',
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'iframe' => 'required|string|max:1024',
             'url' => 'required|string|max:512',
         ]);
