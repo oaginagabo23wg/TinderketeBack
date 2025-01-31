@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Mail\UserCreatedMail;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactMail;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -75,7 +76,7 @@ class UserController extends Controller
             'hometown' => $request->hometown ?? null,
             'telephone' => $request->telephone ?? null,
             'img' => $imagePath,
-            'aktibatua' => '1',
+            'aktibatua' => '0',
         ]);
 
         Mail::to($user->email)->send(new UserCreatedMail($user));
@@ -347,5 +348,26 @@ class UserController extends Controller
             'message' => 'Erabiltzailea ongi desaktibatuta',
             'user' => $user
         ], 200);
+    }
+
+        public function activateUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Erabiltzailea ez da aurkitu'], 404);
+        }
+
+        // Si ya está activado, redirigir directamente a login
+        if ($user->aktibatua == 1) {
+            return redirect(env('APP_URL') . ':3000/login')->with('message', 'Zure kontua dagoeneko aktibatuta dago!');
+        }
+
+        // Activar usuario
+        $user->aktibatua = 1;
+        $user->save();
+
+        // Redirigir a la página de login
+        return redirect(env('APP_URL') . ':3000/login')->with('message', 'Zure kontua aktibatu da!');
     }
 }

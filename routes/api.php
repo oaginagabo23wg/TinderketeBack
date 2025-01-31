@@ -11,6 +11,7 @@ use App\Http\Controllers\ReservationUserController;
 
 //Auth
 Route::post('/register', [UserController::class, 'register']);
+Route::get('/activate/{id}', [UserController::class, 'activateUser']);
 Route::post('/login', [UserController::class, 'login']);
 
 //Users
