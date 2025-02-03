@@ -59,6 +59,11 @@ class LocationController extends Controller
             'url' => 'required|string|max:512'
         ]);
 
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;
+        }
+        
         $location = Location::create($validated);
 
         return response()->json([
@@ -98,11 +103,19 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
             'iframe' => 'required|string|max:1024',
             'url' => 'required|string|max:512',
         ]);
-    
+
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;
+        } else {
+            // Keep existing image path if no new image is uploaded
+            $validated['img'] = $location->img;
+        }
+
         $location->update($validated);
     
         return response()->json([

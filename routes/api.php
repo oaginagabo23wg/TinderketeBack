@@ -26,8 +26,8 @@ Route::post('upload-image', [UserController::class, 'uploadImage']);
 // Location
 Route::apiResource('lokalekuak', LocationController::class);
 Route::get('/getMap/{id}', [LocationController::class, 'index']);
-Route::put('/mapak/{id}', [LocationController::class, 'update']);
-Route::patch('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
+Route::post('/mapak/{id}', [LocationController::class, 'update']);
+Route::delete('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
 
 // Tournament
 Route::apiResource('txapelketak', TournamentController::class);
