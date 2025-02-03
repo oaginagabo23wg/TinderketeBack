@@ -170,4 +170,35 @@ private function formatTournament($tournament)
         ], 200);
     
     }
+
+    //Funcion que nos devuelve la cantidad de participantes por tipo de ubicación (trinkete o frontón).
+    public function getPopularTournaments()
+{
+    // Obtener todos los torneos con su respectiva ubicación y usuarios registrados
+    $tournaments = Tournament::with('location', 'users')->get();
+
+    // Contadores para los dos tipos de torneos
+    $data = [
+        'fronton' => 0,
+        'trinkete' => 0
+    ];
+
+    // Recorremos los torneos para sumar los participantes según el tipo de ubicación
+    foreach ($tournaments as $tournament) {
+        $participantsCount = $tournament->users->count(); // Contamos los usuarios registrados
+
+        // Verificamos si el torneo es de frontón o trinkete y sumamos los participantes
+        if ($tournament->location->type === 'frontoiak') {
+            $data['fronton'] += $participantsCount;
+        } elseif ($tournament->location->type === 'trinketeak') {
+            $data['trinkete'] += $participantsCount;
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ], 200);
+}
+
 }

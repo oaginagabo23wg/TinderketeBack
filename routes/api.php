@@ -46,3 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/reservation/reservationUser', [ReservationController::class, 'reservationUser']);
+
+Route::get('/tournaments/popularity', [TournamentController::class, 'getPopularTournaments']);
+
