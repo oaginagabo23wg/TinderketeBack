@@ -153,7 +153,7 @@ class LocationController extends Controller
         if (!$location) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erabiltzailea ez da aurkitu',
+                'message' => 'Kokalekua ez da aurkitu',
             ], 404);
         }
     
@@ -162,7 +162,7 @@ class LocationController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'Erabiltzailea ongi ezabatu da'
+            'message' => 'Kokalekua ongi ezabatu da'
         ], 200);
     }
     
