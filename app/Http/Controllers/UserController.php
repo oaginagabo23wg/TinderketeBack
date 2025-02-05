@@ -64,7 +64,7 @@ class UserController extends Controller
             ], 422);
         }
 
-        $imagePath = '1361728.png';  
+        $imagePath = '1361728.png';
 
         $user = User::create([
             'name' => $request->name,
@@ -130,12 +130,12 @@ class UserController extends Controller
         // Devolver el path de la imagen
         return response()->json(['imagePath' => $imagePath]);
     }
-    
+
 
     public function update(Request $request, string $id)
     {
         $erabil = User::find($id);
-        
+
         if (!$erabil) {
             return response()->json([
                 'success' => false,
@@ -152,7 +152,7 @@ class UserController extends Controller
             'admin' => 'sometimes|boolean',
             'hometown' => 'sometimes|string|nullable',
             'telephone' => 'sometimes|string|nullable',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
+            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'aktibatua' => 'sometimes|boolean',
         ]);
 
@@ -235,14 +235,7 @@ class UserController extends Controller
             'user' => $user,  // Incluye toda la información del usuario, incluyendo el valor de 'admin'
             'token' => $token,
         ]);
-    } catch (\Exception $e) {
-        \Log::error('Login failed: ' . $e->getMessage(), ['exception' => $e]);
-
-        return response()->json([
-            'message' => 'Hubo un error en el proceso de inicio de sesión.',
-        ], 500);
     }
-}
 
 
     public function getUser(Request $request)
@@ -291,7 +284,7 @@ class UserController extends Controller
         ], 200);
     }
 
-        public function activateUser($id)
+    public function activateUser($id)
     {
         $user = User::find($id);
 
