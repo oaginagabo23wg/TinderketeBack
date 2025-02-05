@@ -20,43 +20,55 @@ class TournamentController extends Controller
         ], 200);
     }
     public function indexWithUsers($id = null)
-    {
-        if ($id) {
-            $tournament = Tournament::with('location', 'users')->find($id);
+{
+    $query = Tournament::with('location', 'users');
 
-            if (!$tournament) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Txapelketa ez da aurkitu'
-                ], 404);
-            }
+    if ($id) {
+        $tournament = $query->find($id);
 
-            $tournament->location->img = url($tournament->location->img);
-            $tournament->users->each(function ($user) {
-                $user->img = url($user->img);
-            });
-
+        if (!$tournament) {
             return response()->json([
-                'success' => true,
-                'data' => $tournament
-            ], 200);
+                'success' => false,
+                'message' => 'Txapelketa ez da aurkitu'
+            ], 404);
         }
-
-        $tournaments = Tournament::with('location', 'users')->get()->map(function ($tournament) {
-            $tournament->location->img = url($tournament->location->img);
-            $tournament->users->each(function ($user) {
-                $user->img = url($user->img);
-            });
-
-            return $tournament;
-        });
 
         return response()->json([
             'success' => true,
-            'data' => $tournaments
+            'data' => $this->formatTournament($tournament)
         ], 200);
     }
 
+    $tournaments = $query->get()->map(fn($tournament) => $this->formatTournament($tournament));
+
+    return response()->json([
+        'success' => true,
+        'data' => $tournaments
+    ], 200);
+}
+
+/**
+ * Formatea un torneo para incluir las imágenes con URLs completas y el conteo de participantes.
+ */
+private function formatTournament($tournament)
+{
+    $tournament->location->img = url($tournament->location->img);
+    $tournament->users->each(fn($user) => $user->img = url($user->img));
+
+    return [
+        'id' => $tournament->id,
+        'title' => $tournament->title,
+        'location' => $tournament->location,
+        'date' => $tournament->date,
+        'time' => $tournament->time,
+        'description' => $tournament->description,
+        'participants_count' => $tournament->users->count(), // Cuenta los usuarios inscritos
+        'max_participants' => $tournament->max_participants,
+        'price' => $tournament->price,
+        'image' => $tournament->location->img ?? "comingsoon.png",
+        'users' => $tournament->users,
+    ];
+}
 
     /**
      * Show the form for creating a new resource.
@@ -158,4 +170,35 @@ class TournamentController extends Controller
         ], 200);
     
     }
+
+    //Funcion que nos devuelve la cantidad de participantes por tipo de ubicación (trinkete o frontón).
+    public function getPopularTournaments()
+{
+    // Obtener todos los torneos con su respectiva ubicación y usuarios registrados
+    $tournaments = Tournament::with('location', 'users')->get();
+
+    // Contadores para los dos tipos de torneos
+    $data = [
+        'fronton' => 0,
+        'trinkete' => 0
+    ];
+
+    // Recorremos los torneos para sumar los participantes según el tipo de ubicación
+    foreach ($tournaments as $tournament) {
+        $participantsCount = $tournament->users->count(); // Contamos los usuarios registrados
+
+        // Verificamos si el torneo es de frontón o trinkete y sumamos los participantes
+        if ($tournament->location->type === 'frontoiak') {
+            $data['fronton'] += $participantsCount;
+        } elseif ($tournament->location->type === 'trinketeak') {
+            $data['trinkete'] += $participantsCount;
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ], 200);
+}
+
 }

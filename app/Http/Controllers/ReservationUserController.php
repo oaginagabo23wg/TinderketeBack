@@ -27,7 +27,7 @@ class ReservationUserController extends Controller
 
         // Verificar si el usuario ya está en la reserva
         if ($reservation->users()->where('user_id', $user->id)->exists()) {
-            return response()->json(['message' => 'Erabiltzailea iada izena emanda dago partidoan'], 400);
+            return response()->json(['message' => 'Erabiltzailea jada izena emanda dago partidoan'], 400);
         }
 
         // Agregar el usuario a la reserva

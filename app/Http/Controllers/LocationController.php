@@ -54,11 +54,16 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'img' => 'required|string|max:255',
+            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'iframe' => 'required|string|max:1024',
             'url' => 'required|string|max:512'
         ]);
 
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;
+        }
+        
         $location = Location::create($validated);
 
         return response()->json([
@@ -98,11 +103,19 @@ class LocationController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
-            'img' => 'required|string|max:255',
+            'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
             'iframe' => 'required|string|max:1024',
             'url' => 'required|string|max:512',
         ]);
-    
+
+        if ($request->hasFile('img')) {
+            $path = $request->file('img')->store('', 'public');
+            $validated['img'] = $path;
+        } else {
+            // Keep existing image path if no new image is uploaded
+            $validated['img'] = $location->img;
+        }
+
         $location->update($validated);
     
         return response()->json([
@@ -140,7 +153,7 @@ class LocationController extends Controller
         if (!$location) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erabiltzailea ez da aurkitu',
+                'message' => 'Kokalekua ez da aurkitu',
             ], 404);
         }
     
@@ -149,7 +162,7 @@ class LocationController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'Erabiltzailea ongi ezabatu da'
+            'message' => 'Kokalekua ongi ezabatu da'
         ], 200);
     }
     

@@ -11,6 +11,7 @@ use App\Http\Controllers\ReservationUserController;
 
 //Auth
 Route::post('/register', [UserController::class, 'register']);
+Route::get('/activate/{id}', [UserController::class, 'activateUser']);
 Route::post('/login', [UserController::class, 'login']);
 
 //Users
@@ -25,11 +26,11 @@ Route::post('upload-image', [UserController::class, 'uploadImage']);
 // Location
 Route::apiResource('lokalekuak', LocationController::class);
 Route::get('/getMap/{id}', [LocationController::class, 'index']);
-Route::put('/mapak/{id}', [LocationController::class, 'update']);
-Route::patch('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
+Route::post('/mapak/{id}', [LocationController::class, 'update']);
+Route::delete('/lokalekuakDelete/{id}', [LocationController::class, 'delete']);
 
 // Tournament
-Route::apiResource('txapelketak', TournamentController::class);
+Route::middleware('auth:sanctum')->apiResource('txapelketak', TournamentController::class);
 Route::get('/txapelketak-with-users/{id?}', [TournamentController::class, 'indexWithUsers']);
 
 
@@ -45,3 +46,5 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/reservation/reservationUser', [ReservationController::class, 'reservationUser']);
+
+Route::get('/tournaments/popularity', [TournamentController::class, 'getPopularTournaments']);

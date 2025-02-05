@@ -58,7 +58,7 @@ class ReservationController extends Controller
 
         if ($existingReservation) {
             return response()->json([
-                'message' => 'Erreserba iada existitzen da kokaleku eta ordu hortan.',
+                'message' => 'Erreserba jada existitzen da kokaleku eta ordu hortan.',
             ], 422); // 422 Unprocessable Entity
         }
 

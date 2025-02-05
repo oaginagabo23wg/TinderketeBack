@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Mail\UserCreatedMail;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactMail;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -75,7 +76,7 @@ class UserController extends Controller
             'hometown' => $request->hometown ?? null,
             'telephone' => $request->telephone ?? null,
             'img' => $imagePath,
-            'aktibatua' => '1',
+            'aktibatua' => '0',
         ]);
 
         Mail::to($user->email)->send(new UserCreatedMail($user));
@@ -149,8 +150,8 @@ class UserController extends Controller
             'password' => 'sometimes|string|min:8|confirmed',
             'birth_date' => 'sometimes|date|before:-18 years',
             'admin' => 'sometimes|boolean',
-            'hometown' => 'nullable|string',
-            'telephone' => 'nullable|string',
+            'hometown' => 'sometimes|string|nullable',
+            'telephone' => 'sometimes|string|nullable',
             'img' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
             'aktibatua' => 'sometimes|boolean',
         ]);
@@ -208,76 +209,8 @@ class UserController extends Controller
     }
 
 
-
-    // public function update(Request $request, $id)
-    // {
-    //     $user = User::find($id);
-
-    //     if (!$user) {
-    //         return response()->json([
-    //             'message' => 'Ez da erabiltzailea aurkitu.'
-    //         ], 404);
-    //     }
-
-    //     // Validación de datos del formulario
-    //     $validator = Validator::make($request->all(), [
-    //         'name' => 'sometimes|string|max:255',
-    //         'surname' => 'sometimes|string|max:255',
-    //         'email' => 'sometimes|string|email|max:255|unique:users,email,' . $id,
-    //         'password' => 'sometimes|string|min:8|confirmed',
-    //         'birth_date' => 'sometimes|date|before:-18 years',
-    //         'admin' => 'sometimes|boolean',
-    //         'hometown' => 'sometimes|string',
-    //         'telephone' => 'sometimes|string',
-    //         'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen opcional
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-
-    //     // // Manejo de la imagen
-    //     // if ($request->hasFile('image')) {
-    //     //     // Eliminar la imagen anterior si existe
-    //     //     if ($user->image && file_exists(storage_path('app/public/' . $user->image))) {
-    //     //         unlink(storage_path('app/public/' . $user->image));
-    //     //     }
-
-    //     //     // Almacenar la nueva imagen
-    //     //     $imagePath = $request->file('image')->store('users', 'public');
-    //     //     $user->image = $imagePath;
-    //     // }
-
-    //     // Actualizar los demás campos
-    //     $user->update([
-    //         'name' => $request->name ?? $user->name,
-    //         'surname' => $request->surname ?? $user->surname,
-    //         'email' => $request->email ?? $user->email,
-    //         'password' => $request->password ? Hash::make($request->password) : $user->password,
-    //         'birth_date' => $request->birth_date ? Carbon::parse($request->birth_date) : $user->birth_date,
-    //         'admin' => $request->admin ?? $user->admin,
-    //         'hometown' => $request->hometown ?? $user->hometown,
-    //         'telephone' => $request->telephone ?? $user->telephone,
-    //     ]);
-
-    //     // Guardar los cambios
-    //     //$user->save();
-
-    //     // // Generar la URL pública de la imagen
-    //     // $imageUrl = asset('storage/' . $user->image); // Asegúrate de que storage:link esté creado
-
-    //     return response()->json([
-    //         'message' => 'Usuario actualizado con éxito',
-    //         'user' => $user,
-    //         // 'image_url' => $imageUrl, // Incluir la URL pública de la imagen
-    //     ], 200);
-    // }
-
-public function login(Request $request)
-{
-    try {
+    public function login(Request $request)
+    {
         // Validar los datos del login
         $request->validate([
             'email' => 'required|email',
@@ -356,5 +289,26 @@ public function login(Request $request)
             'message' => 'Erabiltzailea ongi desaktibatuta',
             'user' => $user
         ], 200);
+    }
+
+        public function activateUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Erabiltzailea ez da aurkitu'], 404);
+        }
+
+        // Si ya está activado, redirigir directamente a login
+        if ($user->aktibatua == 1) {
+            return redirect(env('APP_URL') . ':3000/login')->with('message', 'Zure kontua dagoeneko aktibatuta dago!');
+        }
+
+        // Activar usuario
+        $user->aktibatua = 1;
+        $user->save();
+
+        // Redirigir a la página de login
+        return redirect(env('APP_URL') . ':3000/login')->with('message', 'Zure kontua aktibatu da!');
     }
 }

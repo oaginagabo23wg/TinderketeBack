@@ -25,13 +25,13 @@ class TournamentUserController extends Controller
 
         // Verifica si el usuario ya está registrado
         if (TournamentUser::where('tournament_id', $id)->where('user_id', $userId)->exists()) {
-            return response()->json(['message' => 'Iada txapelketan izena emanda dago'], 400);
+            return response()->json(['message' => 'Jada txapelketan izena emanda dago'], 400);
         }
 
         // Verifica si hay espacio disponible en el torneo
         $currentParticipants = $tournament->users()->count(); // Usando relación
         if ($currentParticipants >= $tournament->max_participants) {
-            return response()->json(['message' => 'Txapelketa iada beteta dago'], 400);
+            return response()->json(['message' => 'Txapelketa jada beteta dago'], 400);
         }
 
         try {
